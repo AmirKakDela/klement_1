@@ -16,16 +16,20 @@ void sigint_handler(int sig) {
 }
 
 void Output(double x1, double x2){
-        printf("X1= %f, X2= %f", x1, x2);
+    printf("X1= %f, X2= %f", x1, x2);
 }
 
 double SendRecv(pid_t child, double x, double y){
-    double buf[2] = {x, y},  res;
+    double buf[2];
+    double res;
+
+    buf[0] = x;
+    buf[1] = y;
 
     int f;
 
     f = open("./file", O_RDWR, 0);
-    write(f, &buf, sizeof(double)*2);
+    write(f, &buf, sizeof(buf));
 
     close(f);
 
@@ -45,10 +49,13 @@ void MainWork(){
     double a, b, c, add, x1, x2, post;
 
     printf("Enter a, b, c: ");
-    scanf("%f", &inputValue_1);
-    scanf("%f", &inputValue_2);
-    scanf("%f", &inputValue_3);
+    scanf("%lf", &inputValue_1);
+    scanf("%lf", &inputValue_2);
+    scanf("%lf", &inputValue_3);
 
+    a = inputValue_1;
+    b = inputValue_2; 
+    c = inputValue_3;
 
     x2 = SendRecv(mul, b, b);
     post = 4;

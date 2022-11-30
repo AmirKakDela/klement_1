@@ -7,41 +7,29 @@
 
 volatile int flag = 0;
 
-struct complex{
-    double Re;
-    double Im;
-};
-
-void Input(struct complex buf[2]){
-    if(buf[0].Im || buf[1].Im)
-        printf("Multiplication process: input %lf+i%lf, %lf+i%lf\n", buf[0].Re, buf[0].Im, buf[1].Re, buf[1].Im);
-    else
-        printf("Multiplication process: input %lf, %lf\n", buf[0].Re, buf[1].Re);
+void Input(double buf[2]){
+    printf("Multiplication process: input %f, %f\n", buf[0], buf[1]);
 }
 
-void Output(struct complex res){
-    if(res.Im)
-        printf("Multiplication process: output %lf+i%lf\n", res.Re, res.Im);
-    else
-        printf("Multiplication process: output %lf\n", res.Re);
+void Output(double res){
+    printf("Multiplication process: output %f\n", res);
 }
 
 void sigint_handler(int sig) {
         int f;
-        struct complex res, buf[2];
+        double res, buf[2];
 
         f = open("./file", O_RDWR, 0);
-        read(f, buf, sizeof(struct complex)*2);
+        read(f, &buf, sizeof(buf));
 
         Input(buf);
 
-        res.Re = buf[0].Re*buf[1].Re+buf[0].Im*buf[1].Im;
-        res.Im = buf[0].Re*buf[1].Im+buf[0].Im*buf[1].Re;
+        res = buf[0] * buf[1];
 
         Output(res);
 
         lseek(f, 0x00, SEEK_SET);
-        write(f, &res, sizeof(struct complex));
+        write(f, &res, sizeof(double));
         close(f);
 
         flag = sig;

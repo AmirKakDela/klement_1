@@ -7,43 +7,30 @@
 
 volatile int flag = 0;
 
-struct complex{
-    double Re;
-    double Im;
-};
-
-void Input(struct complex buf[2]){
-    if(buf[0].Im || buf[1].Im)
-        printf("Division process: input %lf+i%lf, %lf+i%lf\n", buf[0].Re, buf[0].Im, buf[1].Re, buf[1].Im);
-    else
-        printf("Division process: input %lf, %lf\n", buf[0].Re, buf[1].Re);
+void Input(double buf[2]){
+    printf("Division process: input %f, %f\n", buf[0], buf[1]);
 }
 
-void Output(struct complex res){
-    if(res.Im)
-        printf("Division process: output %lf+i%lf\n", res.Re, res.Im);
-    else
-        printf("Division process: output %lf\n", res.Re);
+void Output(double res){
+    printf("Division process: output %f\n", res);
 }
 
 void sigint_handler(int sig) {
         int f;
-        struct complex res, buf[2];
+        double res, buf[2];
         double d;
 
         f = open("./file", O_RDWR, 0);
-        read(f, buf, sizeof(struct complex)*2);
+        read(f, buf, sizeof(double)*2);
 
         Input(buf);
 
-        d = buf[1].Re*buf[1].Re-buf[1].Im*buf[1].Im;
-        res.Re = (buf[0].Re*buf[1].Re-buf[0].Im*buf[1].Im)/d;
-        res.Im = (-buf[0].Re*buf[1].Im+buf[0].Im*buf[1].Re)/d;
+      res = buf[0] / buf[1];
 
         Output(res);
 
         lseek(f, 0x00, SEEK_SET);
-        write(f, &res, sizeof(struct complex));
+        write(f, &res, sizeof(double));
         close(f);
 
         flag = sig;

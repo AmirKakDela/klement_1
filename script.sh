@@ -6,3 +6,4 @@ gcc minus.c -o minus
 gcc multiplication.c -o multiplication
 gcc division.c -o division
 gcc sqrt.c -o sqrt -lm
+./main

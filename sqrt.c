@@ -8,44 +8,30 @@
 
 volatile int flag = 0;
 
-struct complex{
-    double Re;
-    double Im;
-};
 
-void Input(struct complex res){
-    if(res.Im)
-        printf("Sqrt process: input %lf+i%lf\n", res.Re, res.Im);
-    else
-        printf("Sqrt process: input %lf\n", res.Re);
+void Input(double res){
+    printf("Sqrt process: input %f\n", res);
 }
 
-void Output(struct complex res){
-    if(res.Im)
-        printf("Sqrt process: output %lf+i%lf\n", res.Re, res.Im);
-    else
-        printf("Sqrt process: output %lf\n", res.Re);
+void Output(double res){
+    printf("Sqrt process: output %f\n", res);
 }
 
 void sigint_handler(int sig) {
         int f;
-        struct complex res;
-        double z, fi;
+        double res;
 
         f = open("./file", O_RDWR, 0);
-        read(f, &res, sizeof(struct complex));
+        read(f, &res, sizeof(double));
 
         Input(res);
 
-        z=sqrt(sqrt(res.Re*res.Re+res.Im*res.Im));
-        fi = atan2(res.Im, res.Re);
-        res.Re = z*cos(fi/2);
-        res.Im = z*sin(fi/2);
+        res = sqrt(res);
 
         Output(res);
 
         lseek(f, 0x00, SEEK_SET);
-        write(f, &res, sizeof(struct complex));
+        write(f, &res, sizeof(double));
         close(f);
 
         flag = sig;
